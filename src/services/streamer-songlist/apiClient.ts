@@ -54,20 +54,28 @@ export class StreamerSonglistApiClient {
       return firstBatch;
     }
 
-    songList.concat(firstBatch);
+    firstBatch.items.forEach((song: any) => {
+      songList.push(song);
+    });
 
     // Because there is a fixed limit on the number of results per 'page',
     // We will have to perform multiple requests to grab ALL of the songs...
     let totalSongs: number = firstBatch.total;
     let songsLeftToFetch: number = totalSongs - params.size;
 
+    console.log(`Total songs: ${totalSongs}`);
+
     while (songsLeftToFetch > 0) {
+      console.log(`Songs left: ${songsLeftToFetch}`);
       params.current++;
       let nextBatch = await this.performGet(url, params, null);
-      songList.concat(nextBatch);
+      nextBatch.items.forEach((song: any) => {
+        songList.push(song);
+      });
       songsLeftToFetch -= params.size;
     }
 
+    console.log(`Songs retrieved: ${songList.length}`);
     return songList;
   }
 
