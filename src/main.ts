@@ -1,25 +1,21 @@
-import { exit } from "process";
-import { createInterface } from "readline";
-import { promisify } from "util";
+import { StreamerSonglistApiClient } from "./services";
+import { Command } from 'commander';
 
-const rlInterface = createInterface({
-  input: process.stdin,
-  output: process.stdout,
-});
+const program = new Command();
 
-const question = promisify(rlInterface.question).bind(rlInterface);
-
-function greeting(name: unknown) {
-  console.log(`Hello, ${name}!`);
-}
+program
+  .requiredOption('-s, --streamer <username>', 'Twitch streamer username.')
+  .option('--threshold <value>', 'Number of songs left in queue before auto adding more.', '1')
+  .option('--songs-to-auto-queue <value>', 'Number of songs to queue once threshold is met.', '2');
 
 async function main() {
   try {
-    const name = await question("Type your name: ");
-
-    greeting(name);
-
-    rlInterface.close();
+    program.parse();
+    let options = program.opts();
+    let sslClient = new StreamerSonglistApiClient();
+    let streamer = await sslClient.getStreamer(options.streamer);
+    console.log(streamer.id);
+    let songList: Array<any> = await sslClient.getSongList(streamer.id);
   } catch (e) {
     console.error(e);
   }
