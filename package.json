@@ -1,0 +1,19 @@
+{
+  "name": "streamer-songlist-tools",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "dev": "nodemon -w src src/main.ts",
+    "start": "node dist/main.js",
+    "build": "tsc -p ."
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.21",
+    "nodemon": "^2.0.15",
+    "ts-node": "^10.7.0"
+  },
+  "dependencies": {
+    "typescript": "^4.6.2"
+  }
+}
